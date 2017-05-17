@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.codehaus.groovy:groovy-all:2.5.0-alpha-1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Projects/stash/NEBULA/wrapper/gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.5.0-alpha-1/1f5cbd66b534a0dc79b79e4e86fcd68f6b6cf530/groovy-all-2.5.0-alpha-1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Projects/stash/NEBULA/wrapper/gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.5.0-alpha-1/947dc4170a841ed020dd1c798b570fb22a8331a5/groovy-all-2.5.0-alpha-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

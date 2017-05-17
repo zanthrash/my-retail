@@ -1,0 +1,8 @@
+github:
+    token: #your github api token goes here
+
+redsky:
+    baseUrl: http://redsky.target.com/v2/pdp/tcin/
+
+retrofit:
+    logLevel: BODY

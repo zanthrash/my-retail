@@ -1,6 +1,11 @@
 package com.zanthrash.config
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.PropertyAccessor
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.squareup.okhttp.OkHttpClient
 import com.zanthrash.services.RedskyService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,35 +19,14 @@ import java.util.concurrent.TimeUnit
 
 @Configuration
 class RetrofitConfig {
-//  @Bean
-//  HttpLoggingInterceptor retrofitLogLevel(@Value('${retrofit.log.level:BODY}') String logLevel) {
-//    def logging = new HttpLoggingInterceptor()
-//    logging.setLevel(Level.valueOf(logLevel))
-//    logging
-//  }
-//
-//  @Autowired ObjectMapper objectMapper
-//  @Autowired Call.Factory retrofitClient
-//
+
+  @Autowired
+  RedskyProperties redskyProperties
+
   @Bean
-  String redskyEndpoint() { // TODO: Externalize redsky url
-    return "http://redsky.target.com/v2/pdp/tcin"
+  String redskyEndpoint() {
+    return redskyProperties.baseUrl
   }
-//
-//  @Bean
-//  RedskyService redskyService(String redskyEndpoint) {
-//    return new Retrofit.Builder()
-//      .baseUrl(redskyEndpoint)
-//      .callFactory(retrofitClient)
-//      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//      .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-//      .build()
-//      .create(RedskyService.class)
-//  }
-
-  int maxIdleConnections = 5
-  int keepAliveDurationMs = 300000
-
 
   @Bean
   OkClient okClient() {
@@ -52,13 +36,23 @@ class RetrofitConfig {
     return new OkClient(client)
   }
 
+  @Bean
+  ObjectMapper objectMapper() {
+    ObjectMapper objectMapper = new ObjectMapper()
+    objectMapper
+      .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+      .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+      .disable(SerializationFeature.WRAP_ROOT_VALUE)
+      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+
+  }
 
   @Bean
-  RedskyService redskyService(OkClient okHttpClient) {
+  RedskyService redskyService(OkClient okHttpClient, ObjectMapper objectMapper, String redskyEndpoint) {
     new RestAdapter.Builder()
-      .setEndpoint(redskyEndpoint())
+      .setEndpoint(redskyEndpoint)
       .setClient(okHttpClient)
-      .setConverter(new JacksonConverter())
+      .setConverter(new JacksonConverter(objectMapper))
       .setLogLevel(RestAdapter.LogLevel.BASIC)
       .setLog(new Slf4jRetrofitLogger(RedskyService.class))
       .build()

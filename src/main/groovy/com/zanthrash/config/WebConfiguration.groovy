@@ -1,11 +1,13 @@
 package com.zanthrash.config
 
-import javax.servlet.*
-import javax.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+
+import javax.servlet.*
+import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @ComponentScan(basePackages = 'com.zanthrash.controllers')
@@ -27,6 +29,11 @@ class WebConfiguration extends WebMvcConfigurerAdapter {
 
             public void destroy() {}
         }
+    }
+
+    @Override
+    void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", "/swagger-ui.html").setKeepQueryParams(true)
     }
 }
 

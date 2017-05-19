@@ -22,7 +22,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-    baseName = 'github-facade'
+    baseName = 'myRetail-api'
     version = '0.0.1-SNAPSHOT'
 }
 
@@ -34,19 +34,25 @@ repositories {
 
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-aop")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("com.netflix.rxjava:rxjava-groovy:0.20.4")
-    compile("com.netflix.rxjava:rxjava-apache-http:0.19.6")
+    compile "org.springframework.boot:spring-boot-starter-aop"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "com.netflix.rxjava:rxjava-groovy:0.20.4"
+    compile "com.netflix.rxjava:rxjava-apache-http:0.19.6"
 
     compile "com.squareup.retrofit:retrofit:1.9.0"
     compile "com.squareup.retrofit:converter-jackson:1.9.0"
     compile "com.squareup.okhttp:okhttp:2.7.0"
     compile "com.squareup.okhttp:logging-interceptor:2.7.0"
 
-    runtime("org.apache.httpcomponents:httpclient:4.4")
+    compile "org.springframework.data:spring-data-redis:1.8.3.RELEASE"
+    compile "redis.clients:jedis:2.9.0"
+    compile "org.apache.commons:commons-pool2:2.4.2"
+    compile "io.springfox:springfox-swagger2:2.7.0"
+    compile "io.springfox:springfox-swagger-ui:2.7.0"
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    runtime "org.apache.httpcomponents:httpclient:4.4"
+
+    testCompile "org.springframework.boot:spring-boot-starter-test"
     testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
     testCompile 'org.springframework:spring-test'
     testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4'
@@ -56,33 +62,4 @@ dependencies {
 
 }
 
-defaultTasks 'runBuild'
-
-task copyConfig(type:Copy) {
-    File configFile = new File('build/libs/application.yml')
-    if(!configFile.exists()) {
-        from 'src/main/resources'
-        into 'build/libs'
-        include '**/*.yml'
-
-
-        println ":copying applications.yml to build dir"
-    }
-}
-
-task runBuild(dependsOn:['copyConfig'] , type: Exec) {
-    String token = ""
-    if(project.hasProperty('apiKey')) {
-        token =  "--github.token=$apiKey".toString()
-    }
-
-    workingDir 'build/libs'
-    commandLine 'java', '-jar', 'github-facade-0.0.1-SNAPSHOT.jar',  token
-    println "********************** ${commandLine}"
-
-}
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
-}
+defaultTasks 'bootRun'
